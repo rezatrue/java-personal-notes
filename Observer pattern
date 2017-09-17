@@ -1,0 +1,114 @@
+This leassion is learn from https://www.tutorialspoint.com/design_pattern/observer_pattern.htm
+
+There ae three classes to Implement observer_pattern eg; .1) Subject, 2) Observer & 3) Client
+............................................
+Step 01: Create a Subject Class 
+............................................
+import java.util.ArrayList;
+import java.util.List;
+
+public class Subject {
+	
+   private List<Observer> observers = new ArrayList<Observer>();
+   private int state;
+
+   public int getState() {
+      return state;
+   }
+
+   public void setState(int state) {
+      this.state = state;
+      notifyAllObservers();
+   }
+
+   public void attach(Observer observer){
+      observers.add(observer);		
+   }
+
+   public void notifyAllObservers(){
+      for (Observer observer : observers) {
+         observer.update();
+      }
+   } 	
+}
+
+
+............................................
+Step 02: Create a Observer Class
+............................................
+public abstract class Observer {
+   protected Subject subject;
+   public abstract void update();
+}
+
+............................................
+Step 03: Create classes those are extends Observer class 
+        & these are the classes which are notified if there is any update in Subject class 
+............................................
+        
+........sample 1..........
+public class BinaryObserver extends Observer{
+
+   public BinaryObserver(Subject subject){
+      this.subject = subject;
+      this.subject.attach(this);
+   }
+
+   @Override
+   public void update() {
+      System.out.println( "Binary String: " + Integer.toBinaryString( subject.getState() ) ); 
+   }
+}
+..........sample 2..........
+public class OctalObserver extends Observer{
+
+   public OctalObserver(Subject subject){
+      this.subject = subject;
+      this.subject.attach(this);
+   }
+
+   @Override
+   public void update() {
+     System.out.println( "Octal String: " + Integer.toOctalString( subject.getState() ) ); 
+   }
+}
+.........sample 3.........
+public class HexaObserver extends Observer{
+
+   public HexaObserver(Subject subject){
+      this.subject = subject;
+      this.subject.attach(this);
+   }
+
+   @Override
+   public void update() {
+      System.out.println( "Hex String: " + Integer.toHexString( subject.getState() ).toUpperCase() ); 
+   }
+}
+............................................        
+Step 04: change will observe from this class
+............................................
+public class ObserverPatternDemoMain {
+   public static void main(String[] args) {
+      Subject subject = new Subject();
+
+      new HexaObserver(subject);
+      new OctalObserver(subject);
+      new BinaryObserver(subject);
+
+      System.out.println("State change: 15");	
+      subject.setState(15);         // setting this all above three classes (BinaryObserver, OctalObserver ,HexaObserver)
+                                    // will invoke update method , meaning those calls are motify the changes
+      
+   }
+}
+
+
+............................................
+Result
+............................................
+
+State change: 15
+Hex String: F
+Octal String: 17
+Binary String: 1111
