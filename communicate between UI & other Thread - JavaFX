@@ -1,0 +1,75 @@
+source : https://docs.oracle.com/javafx/2/threads/jfxpub-threads.htm
+
+// Service Class allows to start, cancel and restart
+// on press button, button text "Run" change into "Pause", & start service (new Thread)
+// when thread completed it retures String "Run" & change the button text
+// when thread is running if you press button thread will cancel & set button text "Pause"
+
+
+
+import javafx.concurrent.Service;
+
+// extends Service Class
+public class MainController extends Service<String> implements Initializable{ 
+
+....
+......
+..........
+
+
+@FXML
+	private void runBtnAction(ActionEvent event) {
+
+	System.out.println("Run Button");
+
+	this.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+			
+			@Override
+			public void handle(WorkerStateEvent event) {
+				// event.getSource().getValue() will take return value from service thread 
+        // here we are changing button text
+				btnRun.setText(event.getSource().getValue().toString());
+			}
+		});
+		
+		System.out.println("service Status : " + this.getState());
+		
+		if(btnRun.getText().equals("Run")){
+			btnRun.setText("Pause"); 
+			if(this.getState().toString() == "READY") this.start();
+			if(this.getState().toString() == "SUCCEEDED") this.restart();
+		}
+		else if(btnRun.getText().equals("Pause")) {
+			btnRun.setText("Run");
+			if(this.getState().toString() == "RUNNING") this.cancel();
+		}
+					
+	}
+  
+  // assume button 
+  	@Override
+	protected Task<String> createTask() {
+		// TODO Auto-generated method stub
+		return new Task<String>() {
+			
+			@Override
+			protected String call() throws Exception {
+				System.out.println("I am doing assigned a Task ") ;
+	      ........
+        ............
+        ..................
+	
+				return "Run";
+			}
+		};
+	}
+  
+  
+  
+  
+  .....
+  
+  ...........
+  
+  }
+
