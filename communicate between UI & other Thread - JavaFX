@@ -31,11 +31,9 @@ private void runBtnAction(ActionEvent event) {
 			btnRun.setText(event.getSource().getValue().toString());
 		}
 	});
-	// for starting createTask methords / calling service
-	this.start();
-
+	
 	System.out.println("service Status : " + this.getState());
-
+	// calling service start / restart / cancel based on getState() 
 	if(btnRun.getText().equals("Run")){
 		btnRun.setText("Pause"); 
 		if(this.getState().toString() == "READY") this.start();
