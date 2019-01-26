@@ -5,6 +5,8 @@ returns
     {"response":"ok","user":[{"name":"Iron Man","limits":"1000","usage":"0","expaired":"2019-02-26 00:00:00"}]}
 and wrong credential returns
     {"response":"failed","user":[null]}
+source    
+    https://stackoverflow.com/questions/3913502/restful-call-in-java
 */
 
 import java.io.FileInputStream;
