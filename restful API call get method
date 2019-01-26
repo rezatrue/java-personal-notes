@@ -1,0 +1,87 @@
+/*
+when 
+    http://localhost/api/.../login.php?user_email=reza@mail.com&user_password=123
+returns
+    {"response":"ok","user":[{"name":"Iron Man","limits":"1000","usage":"0","expaired":"2019-02-26 00:00:00"}]}
+and wrong credential returns
+    {"response":"failed","user":[null]}
+*/
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.List;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+public class Main {
+
+	public static void main(String[] args) {
+		
+		
+		CloseableHttpClient httpclient = HttpClients.createDefault();
+		HttpGet httpGet = new HttpGet("http://localhost/api/.../login.php?user_email=reza@mail.com&user_password=123");
+
+		// The underlying HTTP connection is still held by the response object
+		// to allow the response content to be streamed directly from the network socket.
+		// In order to ensure correct deallocation of system resources
+		// the user MUST call CloseableHttpResponse#close() from a finally clause.
+		// Please note that if response content is not fully consumed the underlying
+		// connection cannot be safely re-used and will be shut down and discarded
+		// by the connection manager. 
+		CloseableHttpResponse response1 = null;
+		try {
+			response1 = httpclient.execute(httpGet);
+		    System.out.println(response1.getStatusLine());
+		    HttpEntity entity1 = response1.getEntity();
+		    // do something useful with the response body
+		    // and ensure it is fully consumed
+		    //EntityUtils.consume(entity1);
+		    
+		    String responseString = EntityUtils.toString(entity1, "UTF-8");
+		    System.out.println(responseString);
+		    
+		    JSONObject obj = new JSONObject(responseString);
+		    String res = obj.getString("response");
+		    System.out.println(res);
+
+		    if(res.equalsIgnoreCase("ok")) {
+			    JSONArray user = obj.getJSONArray("user");
+			    
+			    for (int i = 0; i < user.length(); i++)
+			    {
+			        String name = user.getJSONObject(i).getString("name");
+			        String limits = user.getJSONObject(i).getString("limits");
+			        String usage = user.getJSONObject(i).getString("usage");
+			        String expaired = user.getJSONObject(i).getString("expaired");
+				    System.out.println(name + " : " + limits + " : " + usage + " : " + expaired);
+			    }
+		    }
+		}catch (ClientProtocolException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally {
+				try {
+					response1.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
+
+	}
+
+}
