@@ -1,0 +1,97 @@
+/*
+source 
+     https://www.mkyong.com/webservices/jax-rs/restfull-java-client-with-java-net-url/
+     
+when response 
+    {"response":"ok","user":[{"name":"Iron Man","limits":"1000","usage":"0","expaired":"2019-02-26 00:00:00"}]}
+wrong credential response    
+    {"response":"failed","user":[null]}    
+
+*/
+
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+
+public class ApiCallPost {
+
+	public static void main(String[] args) {
+		String responseString = null;
+		try {
+
+			URL url = new URL(
+					"http://localhost/api/user/login.php");
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setDoOutput(true);
+			conn.setRequestMethod("POST");
+			conn.setRequestProperty("Content-Type", "application/json");
+
+			String namekey = "user_email";
+			String nameValue = "reza@mail.com";
+			String passwordkey = "user_password";
+			String passwordValue = "123";
+			
+			String input = "{\"" + namekey + "\":\""+ nameValue + "\",\""+ passwordkey + "\":\""+ passwordValue + "\"}";
+//			String input = "{\"user_email\":\"reza@mail.com\",\"user_password\":\"123\"}";
+
+			OutputStream os = conn.getOutputStream();
+			os.write(input.getBytes());
+			os.flush();
+
+			/*
+			if (conn.getResponseCode() != HttpURLConnection.HTTP_CREATED) {
+				throw new RuntimeException("Failed : HTTP error code : "
+						+ conn.getResponseCode());
+			}
+			*/
+			
+			BufferedReader br = new BufferedReader(new InputStreamReader(
+					(conn.getInputStream())));
+
+			StringBuilder sb = new StringBuilder();
+			String output;
+			System.out.println("Output from Server .... \n");
+			while ((output = br.readLine()) != null) {
+				System.out.println(output);
+				sb.append(output);
+			}
+			responseString = sb.toString();
+			conn.disconnect();
+
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		// extracting data from response 
+		JSONObject obj = new JSONObject(responseString);
+	    String res = obj.getString("response");
+	    System.out.println(res);
+
+	    if(res.equalsIgnoreCase("ok")) {
+		    JSONArray user = obj.getJSONArray("user");
+		    
+		    for (int i = 0; i < user.length(); i++)
+		    {
+		        String name = user.getJSONObject(i).getString("name");
+		        String limits = user.getJSONObject(i).getString("limits");
+		        String usage = user.getJSONObject(i).getString("usage");
+		        String expaired = user.getJSONObject(i).getString("expaired");
+			    System.out.println(name + " : " + limits + " : " + usage + " : " + expaired);
+		    }
+	    }
+		
+
+	}
+
+}
