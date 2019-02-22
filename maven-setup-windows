@@ -1,0 +1,36 @@
+source : https://www.youtube.com/playlist?list=PLBgMUB7xGcO0zn6g77BTt-0WvDeFC5vRt
+
+Maven setup:
+
+Download apache-maven-3.6.0-bin.zip (Binary zip archive) from https://maven.apache.org/download.cgi
+Unzip where need to install example : 	D:\maven\apache-maven-3.6.0\bin
+Set Enviroment Variables :
+	set User variables for .... : Variable : M2_HOME ; Value : D:\maven\apache-maven-3.6.0
+	set System variables : Path : D:\maven\apache-maven-3.6.0\bin
+
+Check in command Prompt : mvn -version
+
+
+Maven Project setup: 
+
+Create a folder for the project
+Open comment prompt & go to that dircory : example : cd folder-name 
+
+write in command Prompt : mvn archetype:generate
+
+find in command Prompt the type of project u want to create : 
+
+For simple non web project search for example:  simple maven project , copy the serial number
+		write in the command prompt & hit enter
+
+write version number in command Prompt : example : 2 
+& hit enter
+write 'groupId' in command Prompt : example : com.growtogether
+& hit enter
+write 'artifactId' in command Prompt : example : maven-demo 
+& hit enter
+write 'version' in command Prompt : example : 1.0-SNAPSHOT
+& hit enter 
+write 'package' in command Prompt : example : com.growtogether.demos
+& hit enter
+write 'Y' in command Prompt & hit enter
